@@ -1,0 +1,40 @@
+{
+  "name": "task-manager-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "REST API for managing users and tasks",
+  "main": "dist/server.js",
+  "scripts": {
+    "postinstall": "prisma generate",
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "bcrypt": "latest",
+    "cors": "latest",
+    "dotenv": "latest",
+    "express": "latest",
+    "jsonwebtoken": "latest",
+    "multer": "latest",
+    "pg": "^8.22.0",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "latest",
+    "@types/cors": "latest",
+    "@types/express": "latest",
+    "@types/jsonwebtoken": "latest",
+    "@types/multer": "latest",
+    "@types/node": "latest",
+    "@types/pg": "^8.20.0",
+    "@types/swagger-ui-express": "^4.1.8",
+    "prisma": "^7.8.0",
+    "tsx": "latest",
+    "typescript": "latest"
+  }
+}
