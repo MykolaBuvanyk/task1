@@ -5,6 +5,9 @@ import type { LoginInput, RegisterInput } from "../validators/auth.validator";
 import { AppError } from "../utils/app-error";
 import { generateToken } from "../utils/jwt";
 
+const dummyPasswordHash =
+  "$2b$12$gnE9Mo70VttnaGP56xC51u0uKX2.II510T6KmNEliE1aNA5rvqWT6";
+
 const publicUserFields = {
   id: true,
   name: true,
@@ -41,8 +44,10 @@ export const loginUser = async (input: LoginInput) => {
   const user = await prisma.user.findUnique({
     where: { email: input.email },
   });
+  const passwordHash = user?.password ?? dummyPasswordHash;
+  const passwordMatches = await bcrypt.compare(input.password, passwordHash);
 
-  if (!user || !(await bcrypt.compare(input.password, user.password))) {
+  if (!user || !passwordMatches) {
     throw new AppError(401, "Invalid email or password");
   }
 

@@ -5,6 +5,7 @@ import {
   getAllUsers,
   updateAvatar,
 } from "../services/user.service";
+import { processAvatar } from "../services/image.service";
 import { AppError } from "../utils/app-error";
 import { removeAvatarFile } from "../utils/avatar-file";
 
@@ -40,6 +41,9 @@ export const uploadUserAvatar = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
+  let generatedAvatar: string | undefined;
+  let avatarSavedToDatabase = false;
+
   try {
     if (!req.user) {
       throw new AppError(401, "Unauthorized");
@@ -49,14 +53,18 @@ export const uploadUserAvatar = async (
       throw new AppError(400, "Avatar image is required");
     }
 
-    const avatar = `/uploads/${req.file.filename}`;
-    const { user, previousAvatar } = await updateAvatar(req.user.id, avatar);
+    generatedAvatar = await processAvatar(req.file.buffer);
+    const { user, previousAvatar } = await updateAvatar(
+      req.user.id,
+      generatedAvatar,
+    );
+    avatarSavedToDatabase = true;
     await removeAvatarFile(previousAvatar).catch(console.error);
 
     res.status(200).json({ data: user });
   } catch (error) {
-    if (req.file) {
-      await removeAvatarFile(`/uploads/${req.file.filename}`).catch(console.error);
+    if (generatedAvatar && !avatarSavedToDatabase) {
+      await removeAvatarFile(generatedAvatar).catch(console.error);
     }
 
     next(error);

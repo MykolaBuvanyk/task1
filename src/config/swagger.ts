@@ -7,8 +7,8 @@ export const swaggerDocument = {
   },
   servers: [
     {
-      url: "http://localhost:3000",
-      description: "Local development server",
+      url: "/",
+      description: "Current API host",
     },
   ],
   tags: [
@@ -59,7 +59,7 @@ export const swaggerDocument = {
           avatar: {
             type: "string",
             nullable: true,
-            example: "/uploads/avatar-123456789.jpg",
+            example: "/uploads/avatar-550e8400-e29b-41d4-a716-446655440000.webp",
           },
           role: { type: "string", enum: ["USER", "ADMIN"], example: "USER" },
           createdAt: { type: "string", format: "date-time" },
@@ -195,6 +195,12 @@ export const swaggerDocument = {
               "application/json": { schema: { $ref: "#/components/schemas/Error" } },
             },
           },
+          "429": {
+            description: "Too many registration attempts",
+            content: {
+              "application/json": { schema: { $ref: "#/components/schemas/Error" } },
+            },
+          },
         },
       },
     },
@@ -233,6 +239,12 @@ export const swaggerDocument = {
           },
           "401": {
             description: "Invalid email or password",
+            content: {
+              "application/json": { schema: { $ref: "#/components/schemas/Error" } },
+            },
+          },
+          "429": {
+            description: "Too many failed login attempts",
             content: {
               "application/json": { schema: { $ref: "#/components/schemas/Error" } },
             },
@@ -337,7 +349,8 @@ export const swaggerDocument = {
                   avatar: {
                     type: "string",
                     format: "binary",
-                    description: "Image file, up to 5 MB",
+                    description:
+                      "JPEG, PNG, or WebP image up to 5 MB. Stored as a 512x512 WebP avatar.",
                   },
                 },
               },
